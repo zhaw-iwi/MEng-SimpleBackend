@@ -17,5 +17,6 @@ public class SimpleBackend extends ResourceConfig {
     public SimpleBackend() {
         property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, true);
         register(InventoryService.class);  
+        register(CorsFilter.class);
     }
 }

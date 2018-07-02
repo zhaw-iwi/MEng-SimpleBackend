@@ -13,12 +13,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Path("/inventory")
 public class InventoryService {
 
     @GET
-    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Part> getAllParts() {
         List<Part> resList = new ArrayList<>();
@@ -44,7 +44,6 @@ public class InventoryService {
     }
 
     @POST
-    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     public void addEntry(Part part) {        
         InventoryRepository.getInstance().getParts().put(part.getName(), part);
