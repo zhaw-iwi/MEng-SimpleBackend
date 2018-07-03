@@ -1,41 +1,17 @@
-package ch.zhaw.sml.iwi.pmis.meng.simplebackend.repository;
+ package ch.zhaw.sml.iwi.pmis.meng.simplebackend.repository;
 
 import ch.zhaw.sml.iwi.pmis.meng.simplebackend.model.Part;
 import ch.zhaw.sml.iwi.pmis.meng.simplebackend.model.QuantityPcs;
 import ch.zhaw.sml.iwi.pmis.meng.simplebackend.model.QuantityTons;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 
-public class InventoryRepository {
+public interface InventoryRepository extends CrudRepository<Part, Long> {
     
-    private static InventoryRepository instance;
-    
-    public static InventoryRepository getInstance() {
-        if(instance == null) {
-            instance = new InventoryRepository();
-            populateDemoData();
-        }
-        return instance;
-    }
+    @Query("SELECT p FROM Part p join p.quantity q WHERE TYPE(q) IN (QuantityTons) AND q.amount > ?1")
+    List<Part> getPartByQuantityMinTons(double amout);
 
-    private static void populateDemoData() {
-        Part p = new Part();
-        p.setName("Concrete");
-        p.setQuantity(new QuantityTons(1.0));
-        instance.getParts().put(p.getName(),p);
-        
-        p = new Part();
-        p.setName("SteelBeam");
-        p.setQuantity(new QuantityPcs(5));
-        instance.getParts().put(p.getName(),p);
-
-    }
-    
-    private Map<String,Part> parts = new HashMap<>();
-
-    public Map<String,Part> getParts() {
-        return parts;
-    }
-
-    
 }
