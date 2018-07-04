@@ -1,10 +1,13 @@
 package ch.zhaw.sml.iwi.pmis.meng.simplebackend;
 
-import ch.zhaw.sml.iwi.pmis.meng.simplebackend.boundary.InventoryService;
-import ch.zhaw.sml.iwi.pmis.meng.simplebackend.model.Attribute;
-import ch.zhaw.sml.iwi.pmis.meng.simplebackend.model.Part;
-import ch.zhaw.sml.iwi.pmis.meng.simplebackend.model.QuantityTons;
-import ch.zhaw.sml.iwi.pmis.meng.simplebackend.repository.InventoryRepository;
+import ch.zhaw.sml.iwi.pmis.meng.simplebackend.boundary.LoginService;
+import ch.zhaw.sml.iwi.pmis.meng.simplebackend.boundary.TaskService;
+import ch.zhaw.sml.iwi.pmis.meng.simplebackend.model.Task;
+import ch.zhaw.sml.iwi.pmis.meng.simplebackend.model.UserAccount;
+import ch.zhaw.sml.iwi.pmis.meng.simplebackend.model.UserRole;
+import ch.zhaw.sml.iwi.pmis.meng.simplebackend.repository.TaskRepository;
+import ch.zhaw.sml.iwi.pmis.meng.simplebackend.repository.UserAccountRepository;
+import ch.zhaw.sml.iwi.pmis.meng.simplebackend.security.CORSFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.h2.server.web.WebServlet;
@@ -25,12 +28,16 @@ public class SimpleBackend extends ResourceConfig {
     }
   
     @Autowired
-    private InventoryRepository inventoryRepository;
+    private TaskRepository taskRepository;
+    
+    @Autowired
+    private UserAccountRepository userRepository;
 
     public SimpleBackend() {
         property(ServerProperties.RESPONSE_SET_STATUS_OVER_SEND_ERROR, true);
-        register(InventoryService.class);  
-        register(CorsFilter.class);
+        register(TaskService.class);
+        register(LoginService.class);
+        register(CORSFilter.class);
         register(JacksonHibernateConfig.class);
     }
     
@@ -44,25 +51,18 @@ public class SimpleBackend extends ResourceConfig {
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
-            Part p = new Part();
-            p.setName("Cola");
-            p.setQuantity(new QuantityTons(25));
-            Attribute a = new Attribute();
-            a.setName("BottleMaterial");
-            a.setValue("pp");
-            p.getAttributes().add(a);
-
-            a = new Attribute();
-            a.setName("BottleColor");
-            a.setValue("red");
-            p.getAttributes().add(a);
-            inventoryRepository.save(p);
+            UserAccount u = new UserAccount();
+            u.setLoginName("test");
+            u.setAndHashPassword("test");
+            u.setRoles(new UserRole[]{UserRole.ROLE_USER, UserRole.ROLE_ADMIN});
+            userRepository.save(u);
             
-            p = new Part();
-            p.setName("Fanta");
-            p.setQuantity(new QuantityTons(50));
-            inventoryRepository.save(p);
-            
+            Task t = new Task();
+            t.setName("Mudding");
+            taskRepository.save(t);
+            t = new Task();
+            t.setName("Pudding");
+            taskRepository.save(t);
             
         };
     }
