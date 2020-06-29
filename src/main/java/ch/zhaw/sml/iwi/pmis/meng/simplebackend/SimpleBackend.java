@@ -1,21 +1,16 @@
 package ch.zhaw.sml.iwi.pmis.meng.simplebackend;
 
-import ch.zhaw.sml.iwi.pmis.meng.simplebackend.boundary.InventoryService;
 import ch.zhaw.sml.iwi.pmis.meng.simplebackend.model.Attribute;
 import ch.zhaw.sml.iwi.pmis.meng.simplebackend.model.Part;
 import ch.zhaw.sml.iwi.pmis.meng.simplebackend.model.QuantityTons;
 import ch.zhaw.sml.iwi.pmis.meng.simplebackend.repository.InventoryRepository;
-import org.h2.server.web.WebServlet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
 @SpringBootApplication
 public class SimpleBackend {
   public static void main(String[] args) {
@@ -24,13 +19,6 @@ public class SimpleBackend {
   
     @Autowired
     private InventoryRepository inventoryRepository;
-
-    @Bean
-    public ServletRegistrationBean h2servletRegistration() {
-        ServletRegistrationBean registration = new ServletRegistrationBean(new WebServlet());
-        registration.addUrlMappings("/console/*");
-        return registration;
-    }
 
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
